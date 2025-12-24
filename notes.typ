@@ -35,7 +35,7 @@ blah, blah, blah.
 
 教授比较喜欢说 evaluate 这个词。大致相当于 `eval()`，或许可以翻译成“求值”。
 
-An environment is a collection of frames. \
+An environment is a sequence of frames. \
 这句话说的很好，很有启发。frame 意思相当于“作用域”。
 
 `None` is _not displayed_ by the interpreter as the value of an expression. \
@@ -249,5 +249,58 @@ Environment Diagrams for Nested `def` Statemens:
 #image("assets/pic7.png")
 注意其中 `make_adder(3)` 的 frame 并不在调用后立刻被销毁（而是被保存在返回的函数 `adder` 的闭包中 by copilot），这是因为 `adder` 仍然需要访问其中的 `n`。当一个 frame 中的变量不再被引用后，这个 frame 才会被销毁。
 
+Local names are _not visible_ to other functions.
+#image("assets/pic8.png")
+
+Function composition: \
+A huge example.
+#image("assets/pic9.png")
+
+Lambda expressions are expressions that evaluate to functions. \
+Lambda expressions in python can't contain statements.
+
+Lambda expressions Versus `def` statements:
+#image("assets/pic10.png")
+```python
+>>> square = lambda x: x * x
+>>> square
+<function <lambda> at 0x7f9b8c0c1d30>
+>>> def square(x):
+...     return x * x
+>>> square
+<function square at 0x7f9b8c0c1dc0>
+```
+
+*Function Currying* is a way of manipulating functions.
+
+```python
+def make_adder(n):
+    return lambda k: k + n
+
+>>> make_adder(3)(4)
+7
+>>> add(3, 4)
+7
+```
+
+We can express this general relationship.
+```python
+def curry2(f):
+    def g(x):
+        def h(y):
+            return f(x, y)
+        return h
+    return g
+    # Or: return lambda x: lambda y: f(x, y)
+# Or: curry2 = lambda f: lambda x: lambda y: f(x, y)
+
+>>> m = curry2(add)
+>>> m(3)(4)
+7
+>>> add(3, 4)
+7
+```
+
+*Currying: *Transforming a multi-argument function into a single-argument, higher-order function.
 
 = Function Example: Sounds <lec6>
